@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaandlo — Creative Software Portfolio</title>
+
+    <!-- Tailwind CSS vía CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fuentes Editorial + Tech (Syne, Playfair Italic y Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#0B0C0E',
+                        surface: '#14161A',
+                        tray: '#1B1E24',
+                        cardlight: '#E8EAED',
+                        silver: '#9CA3AF',
+                        accent: '#29ED22', /* Naranja técnico vibrante como en tu referencia */
+                        electric: '#4DA3FF'
+                    },
+                    fontFamily: {
+                        display: ['Syne', 'sans-serif'],
+                        editorial: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Estilos personalizados para la cuadrícula arquitectónica y relieve 3D -->
+    <style>
+        .bg-tech-grid {
+            background-color: #0B0C0E;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+
+        .bg-tray-grid {
+            background-color: #181A20;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 24px 24px;
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.85),
+                inset 0 1px 1px rgba(255, 255, 255, 0.12);
+        }
+
+        .cursor-spotlight {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            background: radial-gradient(100px circle at var(--x, 20%) var(--y, 20%),
+                    rgba(41, 237, 34, 0.14),
+                    transparent 80%);
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-tech-grid text-gray-100 font-sans antialiased selection:bg-accent selection:text-white">
+
+    <!-- Fondo animado de red geométrica -->
+    <canvas id="network-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+    <!-- Capa de luz dinámica del cursor -->
+    <div id="spotlight" class="cursor-spotlight hidden md:block"></div>
+
+    <!-- BARRA DE METADATOS SUPERIOR + NAVEGACIÓN FLOTANTE -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-obsidian/80 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
+                <a href="#inicio" class="font-display font-extrabold text-xl tracking-tight">JAANDLO<span
+                        class="text-accent">.DEV</span></a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest text-silver font-semibold">
+                <a href="#proyectos" class="hover:text-white transition">Proyectos</a>
+                <a href="#sobre-mi" class="hover:text-white transition">Perfil</a>
+                <a href="#habilidades" class="hover:text-white transition">Stack</a>
+                <a href="#contacto"
+                    class="px-5 py-2 rounded-full bg-white text-obsidian font-bold hover:bg-[#29ED22] hover:text-white hover:shadow-[0_0_20px_rgba(255,107,53,0.65)] hover:scale-105 transition-all duration-300">Hablemos</a>
+            </nav>
+
+            <button id="menu-btn" aria-label="Menú" class="md:hidden text-gray-300 hover:text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Menú Móvil -->
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-surface border-b border-white/10 px-6 py-4 space-y-3 text-sm uppercase tracking-wider">
+            <a href="#proyectos" class="block text-silver hover:text-white">Proyectos</a>
+            <a href="#sobre-mi" class="block text-silver hover:text-white">Perfil</a>
+            <a href="#habilidades" class="block text-silver hover:text-white">Stack</a>
+            <a href="#contacto" class="block text-accent font-bold">Contacto</a>
+
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-24">
+
+        <!-- SECCIÓN HERO EDITORIAL (Inspirada en la tipografía gigante de tu imagen) -->
+        <section id="inicio" class="pt-4 space-y-10">
+            <!-- Línea de metadatos estilo estudio de diseño -->
+            <div
+                class="flex justify-between items-center text-xs uppercase tracking-[0.2em] text-silver border-b border-white/10 pb-4">
+                <span>Built to Inspire • UTP Pereira</span>
+                <span>Updated 2026</span>
+            </div>
+
+            <!-- Título Gigante Superpuesto -->
+            <div class="relative py-6 text-center select-none">
+                <span
+                    class="font-editorial italic text-3xl sm:text-5xl text-accent block -mb-3 sm:-mb-6 relative z-10 -rotate-2">
+                    creative software
+                </span>
+                <h1
+                    class="font-display font-extrabold text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tighter uppercase text-white/95 leading-none">
+                    PORTFOLIO
+                </h1>
+                <p class="font-editorial italic text-lg sm:text-2xl text-silver/70 mt-2">
+                    Built with Heart &amp; Code — Andrés López (Jaandlo)
+                </p>
+            </div>
+
+            <!-- Tarjeta de Presentación Bento -->
+            <div
+                class="bg-tray-grid rounded-3xl p-6 sm:p-10 border border-white/10 flex flex-col md:flex-row items-center gap-8">
+                <div class="relative shrink-0">
+                    <div
+                        class="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-300">
+                        <img src="img/profile.jpeg" alt="Andrés López" class="w-full h-full object-cover">
+                    </div>
+                    <span
+                        class="absolute -bottom-3 -right-3 bg-accent text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                        5° Semestre
+                    </span>
+                </div>
+
+                <div class="flex-1 text-center md:text-left space-y-4">
+                    <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">
+                        Desarrollador de Software en Formación
+                    </h2>
+                    <p class="text-silver leading-relaxed max-w-2xl">
+                        Estudiante de Tecnología en Desarrollo de Software en la <strong class="text-white">Universidad
+                            Tecnológica de Pereira</strong>. Transformo ideas creativas en aplicaciones funcionales
+                        combinando desarrollo Backend, Frontend moderno e Inteligencia Artificial.
+                    </p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 pt-2">
+                        <a href="#proyectos"
+                            class="px-6 py-3 rounded-full bg-white text-obsidian font-bold text-xs uppercase tracking-wider hover:bg-[#29ed22] hover:text-white hover:shadow-[0_0_25px_rgba(255,107,53,0.65)] hover:scale-105 transition-all duration-300">
+                            Ver Proyectos
+                        </a>
+                        <a href="https://wa.me/573028335815" target="_blank"
+                            class="px-6 py-3 rounded-full bg-white/5 border border-white/15 text-white font-bold text-xs uppercase tracking-wider hover:bg-[#29ed22] hover:border-[#29ed22] hover:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition-all duration-300">
+                            WhatsApp Directo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BANDEJA DE PROYECTOS (Estilo Showcase 3D de la imagen) -->
+        <section id="proyectos" class="space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <span class="font-editorial italic text-accent text-xl">selected works</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">Proyectos
+                        Destacados</h2>
+                </div>
+
+                <!-- Filtros interactivos en JS -->
+                <div id="filter-buttons" class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider">
+                    <button data-filter="all"
+                        class="filter-btn active px-4 py-2 rounded-full bg-white text-obsidian transition">Todos
+                        (03)</button>
+                    <button data-filter="web"
+                        class="filter-btn px-4 py-2 rounded-full bg-white/5 text-silver border border-white/10 hover:text-white transition">Web
+                        UI</button>
+                    <button data-filter="software"
+                        class="filter-btn px-4 py-2 rounded-full bg-white/5 text-silver border border-white/10 hover:text-white transition">Software
+                        &amp; BD</button>
+                </div>
+            </div>
+
+            <!-- Contenedor Bandeja Elevada -->
+            <div class="bg-tray-grid rounded-[2rem] p-6 sm:p-10 border border-white/10">
+                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- Tarjeta 1 (Estilo contraste claro/editorial como los cuadros de la imagen) -->
+                    <article data-category="web"
+                        class="project-card group bg-cardlight text-obsidian rounded-2xl p-4 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:-translate-y-2">
+                        <div>
+                            <div
+                                class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">
+                                <span>01 / Frontend</span>
+                                <span class="px-2 py-0.5 rounded-full bg-obsidian/10 text-obsidian">HTML • CSS</span>
+                            </div>
+                            <div class="rounded-xl overflow-hidden h-44 mb-4 border border-black/10">
+                                <img src="img/coca-cola_web.jpeg" alt="Interfaz Coca-Cola"
+                                    class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h3 class="font-display text-xl font-extrabold leading-tight">Landing Page Comercial</h3>
+                            <p class="text-gray-600 text-xs mt-2 leading-relaxed">
+                                Interfaz promocional de alto impacto visual con maquetación responsiva y jerarquía
+                                tipográfica moderna.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-black/10 flex justify-between items-center">
+                            <a href="https://github.com/jaandlo/Coca-Cola" target="_blank"
+                                class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-obsidian hover:text-accent transition">
+                                <i data-lucide="github" class="w-4 h-4"></i> Ver Repositorio
+                            </a>
+                            <i data-lucide="arrow-up-right"
+                                class="w-4 h-4 text-gray-400 group-hover:text-accent transition"></i>
+                        </div>
+                    </article>
+
+                    <!-- Tarjeta 2 -->
+                    <article data-category="software"
+                        class="project-card group bg-cardlight text-obsidian rounded-2xl p-4 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:-translate-y-2">
+                        <div>
+                            <div
+                                class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">
+                                <span>02 / Backend &amp; SQL</span>
+                                <span class="px-2 py-0.5 rounded-full bg-obsidian/10 text-obsidian">Java •
+                                    PostgreSQL</span>
+                            </div>
+                            <div class="rounded-xl overflow-hidden h-44 mb-4 border border-black/10">
+                                <img src="img/gestor.jpeg" alt="Sistema Gestor"
+                                    class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h3 class="font-display text-xl font-extrabold leading-tight">Sistema Gestor de Pedidos</h3>
+                            <p class="text-gray-600 text-xs mt-2 leading-relaxed">
+                                Arquitectura relacional con control de usuarios, roles, permisos y gestión integral de
+                                proyectos.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-black/10 flex justify-between items-center">
+                            <a href="https://github.com/jaandlo/GESTOR-DE-PEDIDOS" target="_blank"
+                                class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-obsidian hover:text-accent transition">
+                                <i data-lucide="github" class="w-4 h-4"></i> Ver Repositorio
+                            </a>
+                            <i data-lucide="arrow-up-right"
+                                class="w-4 h-4 text-gray-400 group-hover:text-accent transition"></i>
+                        </div>
+                    </article>
+
+                    <!-- Tarjeta 3 -->
+                    <article data-category="web"
+                        class="project-card group bg-cardlight text-obsidian rounded-2xl p-4 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:-translate-y-2">
+                        <div>
+                            <div
+                                class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3">
+                                <span>03 / UI Architecture</span>
+                                <span class="px-2 py-0.5 rounded-full bg-obsidian/10 text-obsidian">Tailwind • JS</span>
+                            </div>
+                            <div class="rounded-xl overflow-hidden h-44 mb-4 border border-black/10">
+                                <img src="img/landing-page.jpeg" alt="Portafolio Web"
+                                    class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <h3 class="font-display text-xl font-extrabold leading-tight">Plataforma Web Modular</h3>
+                            <p class="text-gray-600 text-xs mt-2 leading-relaxed">
+                                Diseño interactivo con filtrado dinámico en JavaScript, sistema de diseño utilitario y
+                                adaptabilidad total.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-black/10 flex justify-between items-center">
+                            <a href="https://github.com/jaandlo/PORTAFOLIO-MY-CV" target="_blank"
+                                class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-obsidian hover:text-accent transition">
+                                <i data-lucide="github" class="w-4 h-4"></i> Ver Repositorio
+                            </a>
+                            <i data-lucide="arrow-up-right"
+                                class="w-4 h-4 text-gray-400 group-hover:text-accent transition"></i>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- BENTO GRID: SOBRE MÍ + HABILIDADES + FORMACIÓN -->
+        <section id="sobre-mi" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Bloque Sobre Mí (7 columnas) -->
+            <div
+                class="lg:col-span-7 bg-tray-grid rounded-3xl p-8 border border-white/10 flex flex-col justify-between space-y-6">
+                <div>
+                    <span class="font-editorial italic text-accent text-xl">about me</span>
+                    <h2 class="font-display text-3xl font-extrabold uppercase mt-1">Visión &amp; Propósito</h2>
+                </div>
+                <div class="space-y-4 text-silver text-sm sm:text-base leading-relaxed">
+                    <p>
+                        Soy un joven extrovertido que aspira a grandes metas agarrado de la mano de Jesús. Como
+                        estudiante de desarrollo de software, me apasiona dominar tecnologías modernas como <strong
+                            class="text-white">Tailwind CSS, JavaScript, Java y PostgreSQL</strong>, integrando la
+                        <strong class="text-accent">Inteligencia Artificial</strong> como aliada en cada flujo de
+                        trabajo.
+                    </p>
+                    <p>
+                        Mi objetivo es plasmar en software cualquier idea creativa de un usuario, resolviendo retos
+                        complejos con código limpio y experiencias visuales memorables.
+                    </p>
+                </div>
+                <div
+                    class="pt-4 border-t border-white/10 flex flex-wrap gap-6 text-xs uppercase tracking-widest text-silver">
+                    <div><strong class="text-white block text-lg font-display">UTP</strong> Pereira, Colombia</div>
+                    <div><strong class="text-white block text-lg font-display">5° Sem</strong> Desarrollo de Software
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloque Habilidades (5 columnas) -->
+            <div id="habilidades" class="lg:col-span-5 bg-surface rounded-3xl p-8 border border-white/10 space-y-6">
+                <div>
+                    <span class="font-editorial italic text-accent text-xl">tech stack</span>
+                    <h2 class="font-display text-3xl font-extrabold uppercase mt-1">Habilidades</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs font-bold uppercase tracking-wider">
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="layout" class="w-5 h-5 text-accent"></i> HTML5 &amp; CSS3
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="wind" class="w-5 h-5 text-accent"></i> Tailwind CSS
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="file-code" class="w-5 h-5 text-accent"></i> JavaScript
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="coffee" class="w-5 h-5 text-accent"></i> Java &amp; POO
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="terminal" class="w-5 h-5 text-accent"></i> Lenguaje C
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="database" class="w-5 h-5 text-accent"></i> SQL / Postgres
+                    </div>
+                    <div class="col-span-2 p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                        <i data-lucide="git-branch" class="w-5 h-5 text-accent"></i> Git &amp; GitHub Control de
+                        Versiones
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- CONTACTO EDITORIAL -->
+        <section id="contacto"
+            class="bg-tray-grid rounded-[2rem] p-8 sm:p-12 border border-white/10 grid md:grid-cols-2 gap-10 items-center">
+            <div class="space-y-6">
+                <span class="font-editorial italic text-accent text-2xl">let's connect</span>
+                <h2 class="font-display text-4xl sm:text-5xl font-extrabold uppercase leading-none">
+                    Iniciemos un <br>Proyecto
+                </h2>
+                <p class="text-silver text-sm max-w-md">
+                    ¿Tienes una idea, proyecto académico o colaboración en mente? Escríbeme directamente o envíame un
+                    mensaje desde el formulario.
+                </p>
+                <div class="space-y-3 text-sm">
+                    <a href="mailto:jairo.lopez@utp.edu.co"
+                        class="flex items-center gap-3 text-white hover:text-accent transition">
+                        <i data-lucide="mail" class="w-4 h-4 text-accent"></i> jairo.lopez@utp.edu.co
+                    </a>
+                    <a href="https://wa.me/573028335815" target="_blank"
+                        class="flex items-center gap-3 text-white hover:text-accent transition">
+                        <i data-lucide="phone" class="w-4 h-4 text-accent"></i> +57 302 833 5815
+                    </a>
+                    <a href="https://github.com/jaandlo" target="_blank"
+                        class="flex items-center gap-3 text-white hover:text-accent transition">
+                        <i data-lucide="github" class="w-4 h-4 text-accent"></i> github.com/jaandlo
+                    </a>
+                </div>
+            </div>
+
+            <form id="contact-form" class="bg-obsidian/80 p-6 sm:p-8 rounded-2xl border border-white/10 space-y-4">
+                <!-- Llave secreta de Web3Forms (Pega tu código aquí) -->
+                <input type="hidden" name="access_key" value="86a17644-9dd4-4ec1-93af-da31e20e6c8e">
+                <input type="hidden" name="subject" value="Nuevo mensaje desde tu Portafolio Web">
+
+                <div>
+                    <label for="nombre"
+                        class="block text-[11px] font-bold uppercase tracking-widest text-silver mb-1.5">Tu
+                        Nombre</label>
+                    <input type="text" id="nombre" name="name" required placeholder="Ej. Juliana Gómez"
+                        class="w-full px-4 py-3 bg-surface border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label for="correo"
+                        class="block text-[11px] font-bold uppercase tracking-widest text-silver mb-1.5">Tu
+                        Correo</label>
+                    <input type="email" id="correo" name="email" required placeholder="correo@ejemplo.com"
+                        class="w-full px-4 py-3 bg-surface border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-accent">
+                </div>
+                <div>
+                    <label for="mensaje"
+                        class="block text-[11px] font-bold uppercase tracking-widest text-silver mb-1.5">Mensaje</label>
+                    <textarea id="mensaje" name="message" rows="3" required placeholder="Cuéntame sobre tu idea..."
+                        class="w-full px-4 py-3 bg-surface border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-accent"></textarea>
+                </div>
+                <button type="submit" id="submit-btn"
+                    class="w-full py-3.5 rounded-full bg-white text-obsidian font-display font-extrabold text-xs uppercase tracking-widest hover:bg-[#29ED22] hover:text-obsidian hover:shadow-[0_0_25px_rgba(41,237,34,0.7)] hover:scale-[1.02] transition-all duration-300">
+                    Enviar Mensaje
+                </button>
+                <p id="form-feedback" class="hidden text-xs text-accent font-semibold text-center pt-1"></p>
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-white/10 py-8 text-center text-xs uppercase tracking-widest text-silver">
+        <p>&copy; 2026 Andrés López (Jaandlo) • Designed with Editorial Tech Grid</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
